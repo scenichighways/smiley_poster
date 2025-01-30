@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SMILEY MOVIE POSTER GENERATOR</title>
+    <style>
+        body {
+            background: repeating-linear-gradient(45deg, yellow, pink, cyan, lime);
+            font-family: Comic Sans MS, Papyrus, sans-serif;
+            text-align: center;
+            color: black;
+            overflow: hidden;
+        }
+        marquee {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        canvas {
+            border: 5px dashed red;
+            background: white;
+            cursor: crosshair;
+        }
+        .controls {
+            margin-top: 10px;
+        }
+        .poster {
+            display: none;
+            margin-top: 20px;
+            border: 10px solid magenta;
+            padding: 20px;
+            background: hotpink;
+            color: white;
+            font-size: 30px;
+        }
+        .save-btn {
+            background: lime;
+            font-size: 20px;
+            padding: 10px;
+            border: 3px dashed black;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <marquee>🎥 SMILEY MOVIE POSTER GENERATOR - CINEMATIC MAGIC AWAITS 🎥</marquee>
+    <h1>Draw Your Smiley Face</h1>
+    <canvas id="drawCanvas" width="400" height="400"></canvas>
+    <div class="controls">
+        <label for="colorPicker">Pick a color:</label>
+        <input type="color" id="colorPicker" value="#FFD700">
+        <button onclick="generatePoster()">OK</button>
+    </div>
+    <div id="poster" class="poster">
+        <h2 id="movieTitle">UNTITLED MASTERPIECE</h2>
+        <img id="posterImage" src="">
+        <p>Directed by: A. Genius</p>
+        <p>Produced by: Your Imagination</p>
+        <button class="save-btn" onclick="savePoster()">💾 SAVE</button>
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('drawCanvas');
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+
+        canvas.addEventListener('mousedown', () => drawing = true);
+        canvas.addEventListener('mouseup', () => drawing = false);
+        canvas.addEventListener('mousemove', draw);
+
+        function draw(e) {
+            if (!drawing) return;
+            ctx.fillStyle = document.getElementById('colorPicker').value;
+            ctx.beginPath();
+            ctx.arc(e.offsetX, e.offsetY, 10, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function generatePoster() {
+            document.getElementById('posterImage').src = canvas.toDataURL();
+            document.getElementById('poster').style.display = 'block';
+            document.getElementById('movieTitle').innerText = `SMILEY: THE MOVIE`;
+        }
+
+        function savePoster() {
+            const finalCanvas = document.createElement('canvas');
+            finalCanvas.width = 400;
+            finalCanvas.height = 600;
+            const finalCtx = finalCanvas.getContext('2d');
+
+            // Black background
+            finalCtx.fillStyle = 'black';
+            finalCtx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+
+            // Draw user smiley
+            const userDrawing = new Image();
+            userDrawing.src = canvas.toDataURL();
+            userDrawing.onload = () => {
+                finalCtx.drawImage(userDrawing, 50, 100, 300, 300);
+
+                // Add title
+                finalCtx.fillStyle = 'white';
+                finalCtx.font = 'bold 24px Arial';
+                finalCtx.textAlign = 'center';
+                finalCtx.fillText('NOISES', finalCanvas.width / 2, 50);
+
+                // Add credits
+                finalCtx.font = '16px Arial';
+                finalCtx.fillText('Directed by: A. Genius', finalCanvas.width / 2, 450);
+                finalCtx.fillText('Produced by: Your Imagination', finalCanvas.width / 2, 480);
+
+                // Save as image
+                const link = document.createElement('a');
+                link.href = finalCanvas.toDataURL();
+                link.download = 'smiley_poster.png';
+                link.click();
+            };
+        }
+    </script>
+</body>
+</html>
